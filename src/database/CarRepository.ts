@@ -34,4 +34,37 @@ export default class CarRepository {
     const result = await executeTransaction("SELECT * FROM cars");
     return result.rows._array;
   }
+
+  public async delete(id: number) {
+    const result = await executeTransaction(
+      "delete from cars where id = (?);",
+      [id]
+    );
+    return result.insertId;
+  }
+
+  public async searchByModel(term: string) {
+    const result = await executeTransaction(
+      "select * from cars where model like ?;",
+      [`%${term}%`]
+    );
+    return result.rows._array;
+  }
+
+  public async searchByHpRange(minHP: number, maxHP:number) {
+    const result = await executeTransaction(
+      "select * from cars where hp >= ? and hp <= ?;",
+      [minHP, maxHP]
+    );
+    return result.rows._array;
+  }
+
+  public async update(car: Car) {
+    const result = await executeTransaction(
+      "UPDATE cars SET brand = ?, model = ?, hp = ? WHERE id = ?;",
+          [car.brand, car.model, car.hp],
+    );
+    return result.rows._array;
+  }
+
 }
